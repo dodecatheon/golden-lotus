@@ -1,3 +1,7 @@
+Copyright (c) 2013, Louis G. "Ted" Stern, all rights reserved
+
+See LICENSE for licensing information.
+
 This is a collection of simple scripts to draw a set of logarithmic spirals that touch significant points in a set of nested regular pentagrams, decagrams, pentagons and pentagrams.
 
 The basic spiral equation looks like
