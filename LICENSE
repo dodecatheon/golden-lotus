@@ -1,0 +1,9 @@
+Copyright (C) 2013, Louis G. "Ted" Stern
+
+This software is licensed under the terms of the GNU GPL.
+
+I am happy to have others use this design, I just want to be given credit for (re-)discovering the idea, and I would like to be kept apprised of its usage.
+
+Therefore, if you use a logarithmic spiral that is scaled, rotated or reflected from the original r = phi^(theta/(pi/5)) formula in any way, copyright information should be included, and I should be notified and given access to the derivative code.
+
+I am using the GNU GPL because I think mathematical concepts such as this should be kept as open as possible.  I do not want to see it become a trademarked corporate logo.
