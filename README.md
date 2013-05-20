@@ -7,3 +7,7 @@ r = phi ^ (5 * theta / pi)
 where phi equals the golden ratio, 2 * cos(pi/5)
 
 These designs are the result of doodling around, trying to project the interlocking cycles of the edges of an icosadodecahedron onto the plane in a regular way.
+
+Here's an example of the output of **lotus_polar.py**:
+
+![lotus_polar.jpg](lotus_polar.jpg)
