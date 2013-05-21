@@ -136,65 +136,68 @@ delta = D / F * phi
 rb36 = np.array([1.0 for i in range(37)])
 rb18 = np.array([1.0 for i in range(19)])
 
-th1_k = [
-
-for i in range(-1,0):
-    for (rot,
-         scale,
-         shift,
-         th_incr) in [(-(th90 + th72), phi, (cos(th18), sin(th18)), th36)]:
-
-        for k in range(5):
-
-            delta /= phi
-            d1 = D - delta
-            d2 = D - 2. * delta
-            d3 = D2 - delta
-            d4 = D2 - 2. * delta
-
-            th1_opts = [np.array([ - Y + float(i) * D / 36. for i in range(37)]),
-                        np.array([ - Y + float(i) * d1 / 36. for i in range(37)]),
-                        np.array([ delta - Y + float(i) * d2 / 36. for i in range(37)]),
-                        np.array([ - Y + float(i) * D2 / 18. for i in range(19)]),
-                        np.array([ - Y + float(i) * d3 / 18. for i in range(19)]),
-                        np.array([ delta - Y + float(i) * d4 / 18. for i in range(36)]),
-                        np.array([ M1 + float(i) * D2 / 18. for i in range(19)]),
-                        np.array([ M1 + float(i) * d3 / 18. for i in range(19)]),
-                        np.array([ M1 + delta + float(i) * d4 / 18. for i in range(19)])]
-
-            th1 = th1_opts[th1_k[k]]
+def arc_segments(x, m, delta, d1, d2, d3, d4):
+    global D, D2
+    options = [np.array([ x + float(i) * D  / 36.         for i in range(37)]),
+               np.array([ x + float(i) * d1 / 36.         for i in range(37)]),
+               np.array([ x + float(i) * d2 / 36. + delta for i in range(37)]),
+               np.array([ x + float(i) * D2 / 18.         for i in range(19)]),
+               np.array([ x + float(i) * d3 / 18.         for i in range(19)]),
+               np.array([ x + float(i) * d4 / 18. + delta for i in range(36)]),
+               np.array([ m + float(i) * D2 / 18. + delta for i in range(19)]),
+               np.array([ m + float(i) * d3 / 18.         for i in range(19)]),
+               np.array([ m + float(i) * d4 / 18. + delta for i in range(19)])]
+    return options
 
 
+(rot,
+ scale,
+ shift,
+ th_incr) = (-(th90 + th72),
+              phi,
+              (cos(th18), sin(th18)),
+              th36)
 
+# Loop over petals
+for i in range(1):
 
-            th2 = np.array([ delta + X + float(i) * d / 36. for i in range(37)])
-            #tharc, rarc = polar_affine(th_base, r_base, rot, scale, shift)
+    # Loop over 36-degree segments in each petal
+    for k in range(5):
 
-            tha1, ra1 = polar_affine(th1, r_base, rot, scale, shift)
-            tha2, ra2 = polar_affine(th2, r_base, rot, scale, shift)
+        # scale border-angle gap by the radius of curvature
+        delta /= phi
+        d1 = D - delta
+        d2 = D - 2. * delta
+        d3 = D2 - delta
+        d4 = D2 - 2. * delta
 
-            tha1 += i * th72 + k * th_incr
-            tha2 += i * th72 + k * th_incr
-            ra1 *= phi**k
-            ra2 *= phi**k
-            # plt.plot(tharc, rarc, color='black', linewidth=gth)
-            # plt.plot(tharc[1:36], rarc[1:36], color='red', linewidth=2)
-            # plt.plot(tharc[109:144], rarc[109:144], color='red', linewidth=2)
-            plt.plot(tha1, ra1, color='green', linewidth=3)
-            plt.plot(tha2, ra2, color='red', linewidth=3)
+        th1_options = arc_segments(-Y, M1, delta, d1, d2, d3, d4)
+        th2_options = arc_segments( X, M2, delta, d1, d2, d3, d4)
 
-            # for k in range(4):
-            #     # rarc *= phi
-            #     # tharc += th_incr
-            #     ra1 *= phi
-            #     ra2 *= phi
-            #     tha1 += th_incr
-            #     tha2 += th_incr
-            #     # plt.plot(tharc, rarc, color='black', linewidth=gth)
-            #     # plt.plot(tharc[1:36], rarc[1:36], color='red', linewidth=2)
-            #     # plt.plot(tharc[109:144], rarc[109:144], color='red', linewidth=2)
-            #     plt.plot(tha1, ra1, color='red', linewidth=2)
-            #     plt.plot(tha2, ra2, color='red', linewidth=2)
+        if   k == 0:
+            pass
+        elif k == 1:
+            pass
+        elif k == 2:
+            pass
+        elif k == 3:
+            pass
+        elif k == 4:
+            pass
+
+        th1 = th1_options[2]
+        th2 = th2_options[2]
+
+        tha1, ra1 = polar_affine(th1, rb36, rot, scale, shift)
+        tha2, ra2 = polar_affine(th2, rb36, rot, scale, shift)
+
+        tha1 += i * th72 + k * th_incr
+        tha2 += i * th72 + k * th_incr
+        ra1 *= phi**k
+        ra2 *= phi**k
+        plt.plot(tha1, ra1, color='green', linewidth=3)
+        plt.plot(tha2, ra2, color='red', linewidth=3)
+
 
 # copy circle, rotated by -90 degrees
 th = theta - th90
