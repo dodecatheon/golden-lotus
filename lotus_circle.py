@@ -33,6 +33,39 @@ pi_over_5 = pi / 5.
 twopi = 2. * pi
 phi = 2. * cos(pi_over_5)
 
+# Here's an interesting question:
+#
+# We are approximating each 36 degree segment of the spiral by a 36 degree arc
+# with radius equal to the spiral's distance from the center at the far
+# end of the arc (from the center).
+#
+# However, we don't want to draw simply arcs, but arcs with gaps to simulate
+# the over-under pattern of a knot.  That means that we want to subtract some
+# delta from the ends of the 36 degree segments, but in some cases we want to
+# split the segment and put the gap "in the middle".
+#
+# But where is the middle?  It isn't simply 18 degrees along the arc.  The
+# middle is where spirals of opposite direction would cross each other.
+# At that point, if the outer radius of the arc is phi and the inner is 1, the
+# point in the middle has radius sqrt(phi).
+#
+# Using the formula for logarithmic spiral arc lengths (starting at the center
+# with $\theta = -\infty$), we can cancel terms to get that the arc length
+# from closer radius to the "middle" is
+#
+#   (sqrt(phi) - 1) / (phi - 1)
+#   = 0.44013703852159741
+#
+# of the way along the arc.  This value is very close to 44% of 36 degrees
+# or pi / 5 if using radians.  This is about 15.85 degrees.  So we will break
+# a circular arc into two segments, one with ~15.85 degrees and one with
+# ~20.15 degrees.
+#
+arc_fraction = (sqrt(phi) - 1.) / (phi - 1.)
+
+mid_lo = pi_over_5 * arc_fraction
+mid_hi = pi_over_5 * (1. - arc_fraction)
+
 @np.vectorize
 def rfunc(angle):
     return phi ** (min(abs(angle), twopi - angle) / pi_over_5)
@@ -120,83 +153,160 @@ th108 = theta[108]
 # th_base = np.array([a/180. * pi for a in range(-72,73)])
 # r_base = np.array([1.0 for i in range(len(th_base))])
 
-X = 36. / 180. * pi
-Y = 72. / 180. * pi
+X = pi_over_5
+Y = 2 * X
 
-D = Y - X
+D = pi_over_5
 
-D2 = D/2.
-M1 = -Y + D2
-M2 = X + D2
+n1 = 16
+n2 = 20
 
-F = 6.
+DD1 = mid_hi
+DD2 = mid_lo
 
-delta = D / F * phi
+M1 = -Y + mid_hi
+M2 = X + mid_lo
 
-rb36 = np.array([1.0 for i in range(37)])
-rb18 = np.array([1.0 for i in range(19)])
+F = 3.
 
-def arc_segments(x, m, delta, d1, d2, d3, d4):
-    global D, D2
-    options = [np.array([ x + float(i) * D  / 36.         for i in range(37)]),
-               np.array([ x + float(i) * d1 / 36.         for i in range(37)]),
-               np.array([ x + float(i) * d2 / 36. + delta for i in range(37)]),
-               np.array([ x + float(i) * D2 / 18.         for i in range(19)]),
-               np.array([ x + float(i) * d3 / 18.         for i in range(19)]),
-               np.array([ x + float(i) * d4 / 18. + delta for i in range(36)]),
-               np.array([ m + float(i) * D2 / 18. + delta for i in range(19)]),
-               np.array([ m + float(i) * d3 / 18.         for i in range(19)]),
-               np.array([ m + float(i) * d4 / 18. + delta for i in range(19)])]
-    return options
+def arc_segment(index, x, delta, n, d0):
+    rn = range(n+1)
+    fn = float(n)
+    d1 = d0 - delta
+    d2 = d0 - 2. * delta
+    xx = [x, x, x + delta, x + delta][index]
+    dd = [d0, d1, d2, d1][index]
+    return np.array([ xx + float(ii) * dd / fn for ii in rn])
 
+def plot_polar_affine(th, rot, scale, shift, i, k, color, lw):
+    global th72, th_incr, phi
 
-(rot,
- scale,
- shift,
- th_incr) = (-(th90 + th72),
-              phi,
-              (cos(th18), sin(th18)),
-              th36)
+    rb = np.array([1.0 for ii in range(len(th))])
+
+    tha, ra = polar_affine(th, rb, rot, scale, shift)
+
+    tha += i * th72 + k * th_incr
+    ra *= phi**k
+
+    plt.plot(tha, ra, color=color, linewidth=lw)
+
+    return None
+
+lw =
+for (rot,
+     scale,
+     shift,
+     th_incr,
+     color_lo,
+     color_hi) in [(-(th90 + th72),
+                     phi,
+                     (cos(th18), sin(th18)),
+                     th36,
+                     'green',
+                     'red'),
+                   (-(th90 + th36),
+                     phi,
+                     (cos(th18), sin(th18)),
+                     th36,
+                     'blue',
+                     'purple')]:
+
 
 # Loop over petals
-for i in range(1):
+for i in range(5):
+
+    delta = D / F * phi
 
     # Loop over 36-degree segments in each petal
     for k in range(5):
 
         # scale border-angle gap by the radius of curvature
         delta /= phi
-        d1 = D - delta
-        d2 = D - 2. * delta
-        d3 = D2 - delta
-        d4 = D2 - 2. * delta
-
-        th1_options = arc_segments(-Y, M1, delta, d1, d2, d3, d4)
-        th2_options = arc_segments( X, M2, delta, d1, d2, d3, d4)
 
         if   k == 0:
-            pass
+            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
         elif k == 1:
-            pass
+            plot_polar_affine(arc_segment(3, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
+
         elif k == 2:
-            pass
+            plot_polar_affine(arc_segment(2, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(3, M2, delta, 36, mid_hi),
+                              rot, scale, shift, i, k, 'red')
+
+            plot_polar_affine(arc_segment(1, X, delta, 36, mid_lo),
+                              rot, scale, shift, i, k, 'red')
+
         elif k == 3:
-            pass
-        elif k == 4:
-            pass
+            plot_polar_affine(arc_segment(1, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
 
-        th1 = th1_options[2]
-        th2 = th2_options[2]
+            plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
 
-        tha1, ra1 = polar_affine(th1, rb36, rot, scale, shift)
-        tha2, ra2 = polar_affine(th2, rb36, rot, scale, shift)
+        else:
+            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
 
-        tha1 += i * th72 + k * th_incr
-        tha2 += i * th72 + k * th_incr
-        ra1 *= phi**k
-        ra2 *= phi**k
-        plt.plot(tha1, ra1, color='green', linewidth=3)
-        plt.plot(tha2, ra2, color='red', linewidth=3)
+            plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
+
+# Loop over petals
+for i in range(5):
+
+    delta = D / F * phi
+
+    # Loop over 36-degree segments in each petal
+    for k in range(5):
+
+        # scale border-angle gap by the radius of curvature
+        delta /= phi
+
+        if   k == 0:
+            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
+        elif k == 1:
+            plot_polar_affine(arc_segment(3, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
+
+        elif k == 2:
+            plot_polar_affine(arc_segment(2, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(3, M2, delta, 36, mid_hi),
+                              rot, scale, shift, i, k, 'red')
+
+            plot_polar_affine(arc_segment(1, X, delta, 36, mid_lo),
+                              rot, scale, shift, i, k, 'red')
+
+        elif k == 3:
+            plot_polar_affine(arc_segment(1, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
+
+        else:
+            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                              rot, scale, shift, i, k, 'green')
+
+            plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red')
 
 
 # copy circle, rotated by -90 degrees
@@ -212,7 +322,8 @@ main_slices = [slice(0,28),
 # Primary petals
 for count in range(5):
     for s in main_slices:
-        plt.plot(th[s], rs[s], color=lcolor, linewidth=lth)
+        pass
+        # plt.plot(th[s], rs[s], color=lcolor, linewidth=lth)
 
     # Rotate coordinates by 72 degrees
     th += th72
