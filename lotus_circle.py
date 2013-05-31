@@ -193,35 +193,37 @@ def plot_polar_affine(th, rot, scale, shift, i, k, color, lw):
     return None
 
 lw =
-for (rot,
+for (kk,
+     rot,
      scale,
      shift,
      th_incr,
      color_lo,
-     color_hi) in [(-(th90 + th72),
-                     phi,
-                     (cos(th18), sin(th18)),
-                     th36,
-                     'green',
-                     'red'),
-                   (-(th90 + th36),
-                     phi,
-                     (cos(th18), sin(th18)),
-                     th36,
-                     'blue',
-                     'purple')]:
+     color_hi) in [(0,
+                    -(th90 + th72),
+                    phi,
+                    (cos(th18), sin(th18)),
+                    th36,
+                    'green',
+                    'red'),
+                   (1,
+                    -(th90 + th36),
+                    phi,
+                    (cos(th18), sin(th18)),
+                    th36,
+                    'blue',
+                    'purple')]:
 
+     # Loop over petals
+     for i in range(5):
 
-# Loop over petals
-for i in range(5):
+         delta = D / F * phi
 
-    delta = D / F * phi
+         # Loop over 36-degree segments in each petal
+         for k in range(5):
 
-    # Loop over 36-degree segments in each petal
-    for k in range(5):
-
-        # scale border-angle gap by the radius of curvature
-        delta /= phi
+             # scale border-angle gap by the radius of curvature
+             delta /= phi
 
         if   k == 0:
             plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
