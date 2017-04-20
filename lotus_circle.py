@@ -7,7 +7,7 @@ In this version, also plot a set of golden triangles in red, and their
 associated circular arcs in dotted green.
 """
 import matplotlib
-# matplotlib.use('PS')
+matplotlib.use('PS')
 import matplotlib.pyplot as plt
 import numpy as np
 from math import *
@@ -25,8 +25,8 @@ bth = 1
 gth = 0.5
 
 # Line colors
-bcolor='gray'
-lcolor='darkblue'
+bcolor='teal'
+lcolor='gold'
 
 # Constants
 pi_over_5 = pi / 5.
@@ -169,6 +169,8 @@ M2 = X + mid_lo
 
 F = 3.
 
+lw = 2.
+
 def arc_segment(index, x, delta, n, d0):
     rn = range(n+1)
     fn = float(n)
@@ -192,7 +194,6 @@ def plot_polar_affine(th, rot, scale, shift, i, k, color, lw):
 
     return None
 
-lw =
 for (kk,
      rot,
      scale,
@@ -225,42 +226,42 @@ for (kk,
              # scale border-angle gap by the radius of curvature
              delta /= phi
 
-        if   k == 0:
-            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+         if k == 0:
+             plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                               rot, scale, shift, i, k, 'green', lw)
 
-            plot_polar_affine(arc_segment(1, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
-        elif k == 1:
-            plot_polar_affine(arc_segment(3, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+             plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                              rot, scale, shift, i, k, 'red', lw)
+         elif k == 1:
+             plot_polar_affine(arc_segment(3, -Y, delta, 36, D),
+                               rot, scale, shift, i, k, 'green', lw)
 
-            plot_polar_affine(arc_segment(3, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+             plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                               rot, scale, shift, i, k, 'red', lw)
 
-        elif k == 2:
-            plot_polar_affine(arc_segment(2, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+         elif k == 2:
+             plot_polar_affine(arc_segment(2, -Y, delta, 36, D),
+                               rot, scale, shift, i, k, 'green', lw)
 
-            plot_polar_affine(arc_segment(3, M2, delta, 36, mid_hi),
-                              rot, scale, shift, i, k, 'red')
+             plot_polar_affine(arc_segment(3, M2, delta, 36, mid_hi),
+                               rot, scale, shift, i, k, 'red', lw)
 
-            plot_polar_affine(arc_segment(1, X, delta, 36, mid_lo),
-                              rot, scale, shift, i, k, 'red')
+             plot_polar_affine(arc_segment(1, X, delta, 36, mid_lo),
+                               rot, scale, shift, i, k, 'red', lw)
 
-        elif k == 3:
-            plot_polar_affine(arc_segment(1, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+         elif k == 3:
+             plot_polar_affine(arc_segment(1, -Y, delta, 36, D),
+                               rot, scale, shift, i, k, 'green', lw)
 
-            plot_polar_affine(arc_segment(1, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+             plot_polar_affine(arc_segment(1, X, delta, 36, D),
+                               rot, scale, shift, i, k, 'red', lw)
 
-        else:
-            plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+         else:
+             plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
+                               rot, scale, shift, i, k, 'green', lw)
 
-            plot_polar_affine(arc_segment(3, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+             plot_polar_affine(arc_segment(3, X, delta, 36, D),
+                               rot, scale, shift, i, k, 'red', lw)
 
 # Loop over petals
 for i in range(5):
@@ -275,40 +276,40 @@ for i in range(5):
 
         if   k == 0:
             plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+                              rot, scale, shift, i, k, 'green', lth)
 
             plot_polar_affine(arc_segment(1, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
         elif k == 1:
             plot_polar_affine(arc_segment(3, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+                              rot, scale, shift, i, k, 'green', lth)
 
             plot_polar_affine(arc_segment(3, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
 
         elif k == 2:
             plot_polar_affine(arc_segment(2, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+                              rot, scale, shift, i, k, 'green', lth)
 
             plot_polar_affine(arc_segment(3, M2, delta, 36, mid_hi),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
 
             plot_polar_affine(arc_segment(1, X, delta, 36, mid_lo),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
 
         elif k == 3:
             plot_polar_affine(arc_segment(1, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+                              rot, scale, shift, i, k, 'green', lth)
 
             plot_polar_affine(arc_segment(1, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
 
         else:
             plot_polar_affine(arc_segment(0, -Y, delta, 36, D),
-                              rot, scale, shift, i, k, 'green')
+                              rot, scale, shift, i, k, 'green', lth)
 
             plot_polar_affine(arc_segment(3, X, delta, 36, D),
-                              rot, scale, shift, i, k, 'red')
+                              rot, scale, shift, i, k, 'red', lth)
 
 
 # copy circle, rotated by -90 degrees
@@ -361,12 +362,12 @@ for count in range(5):
 # Adjust boundaries on figure
 plt.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
 
-for ftype in ['pdf']:
+for ftype in ['svg']:
     plt.savefig("lotus_circle." + ftype,
                 bbox_inches='tight',
-                pad_inches=0,
-                transparent=True,
-                dpi=18)
+                pad_inches=0.1,
+                transparent=False,
+                dpi=300)
 
 if show_plot:
     plt.show()

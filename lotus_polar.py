@@ -4,24 +4,24 @@ Plot interlaced golden spirals,  r = phi ** (theta / 36)
 with rotations and reflections.
 """
 import matplotlib
-# matplotlib.use('PS')
+matplotlib.use('PS')
 import matplotlib.pyplot as plt
 import numpy as np
 from math import *
 
 # Turn to True if you want to see the dotted lines
-do_dotted = True
+do_dotted = False
 
 # Turn to True if you want to interact with the plot:
-show_plot = True
+show_plot = False
 
 # Line thickness
 lth = 3.5
 bth = 1
 
 # Line colors
-bcolor='gray'
-lcolor='darkblue'
+bcolor='teal'
+lcolor='gold'
 
 # Constants
 pi_over_5 = pi / 5.
@@ -82,6 +82,7 @@ if do_dotted:
     #              color='grey',
     #              linewidth=0.5)
 
+    # Decagrams
     for r in [phi**j for j in range(5,-1,-1)]:
         plt.plot([float((3*i) % 10) * th36 + th18 for i in range(11)],
                  [r for i in range(11)],
@@ -148,12 +149,12 @@ for count in range(5):
 # Adjust boundaries on figure
 plt.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
 
-for ftype in ['svg', 'pdf']:
+for ftype in ['svg']:
     plt.savefig("lotus_polar." + ftype,
                 bbox_inches='tight',
-                pad_inches=0,
-                transparent=True,
-                dpi=18)
+                pad_inches=0.1,
+                transparent=False,
+                dpi=300)
 
 if show_plot:
     plt.show()
