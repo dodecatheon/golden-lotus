@@ -1,17 +1,18 @@
 #!/usr/bin/env python
-from __future__ import print_function, division
-try:
-    range = xrange
-    input = raw_input
-    from itertools import izip as zip
-except NameError:
-    pass
-
+# from __future__ import print_function, division
+# try:
+#     range = xrange
+#     input = raw_input
+#     from itertools import izip as zip
+# except NameError:
+#     pass
+# 
 import matplotlib
-matplotlib.use('SVG')
+matplotlib.use('PS')
 import matplotlib.pyplot as plt
 import numpy as np
 from math import *
+import sys
 
 __doc__ = """\
 Plot approximate logarithmic spirals in an {n,3} star, using circular arc
@@ -66,8 +67,7 @@ def stretch(theta,r,alpha):
 
 def ngramlotus(n=10,fclr='gold',bclr='teal',fw=2,bw=1,show_plot=False):
     # n = number of sides in polygon
-    plt.ion()
-
+    # plt.ion()
     polyangle = 2 * pi / n
     halfangle = pi / n
     degangle = 360 // n
@@ -153,15 +153,23 @@ def ngramlotus(n=10,fclr='gold',bclr='teal',fw=2,bw=1,show_plot=False):
     # Adjust boundaries on figure
     plt.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
 
+    if show_plot:
+        plt.show()
+
     for ftype in ['svg']:
         plt.savefig("n{}gram.{}".format(n, ftype),
+                    format=ftype,
                     bbox_inches='tight',
                     pad_inches=0.1,
                     transparent=False,
                     dpi=300)
-    if show_plot:
-        plt.show()
 
 if __name__ == "__main__":
-    ngramlotus(12,fclr='navy',bclr='navy',fw=3,bw=0.5)
+    args = sys.argv[1:]
 
+    if (len(args) > 0):
+        n = int(args[0])
+    else:
+        n = 10
+        
+    ngramlotus(n,fclr='navy',bclr='navy',fw=2,bw=0.5,show_plot=True)
